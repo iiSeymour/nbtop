@@ -3,6 +3,11 @@ nbtop
 
 IPython Notebook server monitor inspired by `htop`.
 
+screenshot
+==========
+
+![screenshot](https://raw.githubusercontent.com/iiSeymour/nbtop/master/screenshot.png)
+
 usage
 =====
 
@@ -23,13 +28,13 @@ installation
 
 From pip:
 
-    $ pip install nbtop --user
+    $ sudo pip install nbtop
 
 From github:
 
     $ git clone https://github.com/iiSeymour/nbtop
     $ cd nbtop
-    $ python setup.py install --user
+    $ sudo python setup.py install
 
 notes
 =====
