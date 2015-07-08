@@ -12,7 +12,7 @@ URL = "https://github.com/iiSeymour/nbtop"
 
 setup(
     name=NAME,
-    version=0.1,
+    version=0.2,
     description=DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,

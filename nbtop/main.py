@@ -261,14 +261,18 @@ def main():
                         help="no verification of SSL certificates")
     parser.add_argument("-l", "--links", action="store_true", default=False,
                         help="display full notebook URLs")
+    parser.add_argument("--shutdown-all", action="store_true", default=False,
+                        help="shutdown all notebooks on the server")
     parser.add_argument("-u", "--url", required=True,
                         help="IPython notebook server url")
 
     args = parser.parse_args()
+    state = session_state(args.url, verify=args.insecure)
 
-    # before curses takes over, do an inital connection test so
-    # session_state can write to stderr on connection failures
-    session_state(args.url, verify=args.insecure)
+    if args.shutdown_all:
+        for notebook in state:
+            shutdown_notebook(args.url, notebook['kernel']['id'])
+        exit()
 
     try:
         if args.debug:
