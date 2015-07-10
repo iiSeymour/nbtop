@@ -1,4 +1,4 @@
 *.pyc
 build
 dist
-nbtop.egg.info
+nbtop.egg-info/
