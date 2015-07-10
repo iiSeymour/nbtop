@@ -110,11 +110,11 @@ def notebook_name(notebook, args):
     return name
 
 
-def shutdown_notebook(url, kernel):
+def shutdown_notebook(url, kernel, verify=True):
     """
     Shutdown an IPython notebook
     """
-    requests.delete('%s/api/kernels/%s' % (url, kernel))
+    requests.delete('%s/api/kernels/%s' % (url, kernel), verify=verify)
 
 
 def simple_cli(args):
@@ -241,7 +241,7 @@ def curses_cli(stdscr, args):
         if cmd in [ord('q'), ord('Q')]:
             sys.exit()
         if cmd in [ord('s'), ord('S')]:
-            shutdown_notebook(args.url, kernels[current_line])
+            shutdown_notebook(args.url, kernels[current_line], verify=args.insecure)
             if current_line == running_notebooks or current_line == bottom:
                 current_line -= 1
 
@@ -271,7 +271,7 @@ def main():
 
     if args.shutdown_all:
         for notebook in state:
-            shutdown_notebook(args.url, notebook['kernel']['id'])
+            shutdown_notebook(args.url, notebook['kernel']['id'], verify=args.insecure)
         exit()
 
     try:
