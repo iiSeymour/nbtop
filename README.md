@@ -13,13 +13,14 @@ usage
 
 ```bash
 $ nbtop --help
-usage: nbtop.py [-h] [-e] [-k] [-l] -u URL
+usage: main.py [-h] [-e] [-k] [-l] [--shutdown-all] -u URL
 
 optional arguments:
   -h, --help         show this help message and exit
   -e, --extension    strip notebook extensions
   -k, --insecure     no verification of SSL certificates
   -l, --links        display full notebook URLs
+  --shutdown-all     shutdown all notebooks on the server
   -u URL, --url URL  IPython notebook server url
 ```
 
