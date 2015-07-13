@@ -30,7 +30,7 @@ def notebook_process(process):
     """
     Is the process an IPython notebook process
     """
-    if process.name() == 'python':
+    if 'python' in process.name():
         for arg in process.cmdline():
             if arg.endswith('.json') and '/kernel-' in arg:
                 return True
