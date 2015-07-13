@@ -16,7 +16,6 @@ import requests
 import argparse
 import warnings
 from time import sleep
-#from urllib import quote
 from psutil import process_iter
 from curses import color_pair, wrapper
 
