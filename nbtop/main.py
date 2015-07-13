@@ -16,13 +16,12 @@ import requests
 import argparse
 import warnings
 from time import sleep
-from urllib import quote
 from psutil import process_iter
-from curses import color_pair
-from curses.wrapper import wrapper
+from curses import color_pair, wrapper
+
 from os.path import splitext, basename
 from simplejson.scanner import JSONDecodeError
-
+from six.moves.urllib.parse import quote
 from requests.exceptions import SSLError, ConnectionError
 
 
@@ -124,12 +123,12 @@ def simple_cli(args):
         state = session_state(args.url, verify=args.insecure)
 
         os.system('clear')
-        print '{:40}{:6}{:8}{}'.format('Kernel', 'CPU %', 'MEM %', 'Notebook')
+        print('{:40}{:6}{:8}{}'.format('Kernel', 'CPU %', 'MEM %', 'Notebook'))
 
         for notebook in state:
             kernel = notebook['kernel']['id']
             name = notebook_name(notebook, args)
-            print '{0:40}{1[0]:5.1f}{1[1]:6.1f}   {2:}'.format(kernel, load[kernel], name)
+            print('{0:40}{1[0]:5.1f}{1[1]:6.1f}   {2:}'.format(kernel, load[kernel], name))
 
         sleep(args.rate)
 

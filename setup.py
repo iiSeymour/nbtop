@@ -28,6 +28,7 @@ setup(
     install_requires=[
         'requests>=2.7.0',
         'psutil>=2.2.1',
-        'simplejson>=3.3.1'
+        'simplejson>=3.3.1',
+        'six>=1.9.0'
     ]
 )
