@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+from nbtop.main import __version__
 
 NAME = "nbtop"
 DESCRIPTION = "resource monitor for IPython Notebook servers"
@@ -12,7 +13,7 @@ URL = "https://github.com/iiSeymour/nbtop"
 
 setup(
     name=NAME,
-    version=0.3,
+    version=__version__,
     description=DESCRIPTION,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,

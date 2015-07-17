@@ -23,6 +23,8 @@ from simplejson.scanner import JSONDecodeError
 from six.moves.urllib.parse import quote
 from requests.exceptions import SSLError, ConnectionError, InvalidSchema
 
+__version__ = "0.3.1"
+
 
 def notebook_process(process):
     """
@@ -267,6 +269,7 @@ def main():
                         help="shutdown all notebooks on the server")
     parser.add_argument("-u", "--url", required=True,
                         help="IPython notebook server url")
+    parser.add_argument("-v", "--version", action="version", version=__version__)
 
     args = parser.parse_args()
     state = session_state(args.url, verify=args.insecure)
