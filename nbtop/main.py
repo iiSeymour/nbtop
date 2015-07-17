@@ -18,11 +18,10 @@ import warnings
 from time import sleep
 from psutil import process_iter
 from curses import color_pair, wrapper
-
 from os.path import splitext, basename
 from simplejson.scanner import JSONDecodeError
 from six.moves.urllib.parse import quote
-from requests.exceptions import SSLError, ConnectionError
+from requests.exceptions import SSLError, ConnectionError, InvalidSchema
 
 
 def notebook_process(process):
@@ -85,6 +84,9 @@ def session_state(url, verify=True):
         sys.exit(1)
     except ConnectionError:
         sys.stderr.write('connection to %s failed!\n' % url)
+        sys.exit(1)
+    except InvalidSchema as e:
+        sys.stderr.write('%s\n' % e)
         sys.exit(1)
     if response.status_code == 200:
         try:
