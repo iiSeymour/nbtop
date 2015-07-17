@@ -113,7 +113,8 @@ def shutdown_notebook(url, kernel, verify=True):
     """
     Shutdown an IPython notebook
     """
-    requests.delete('%s/api/kernels/%s' % (url, kernel), verify=verify)
+    response = requests.delete('%s/api/kernels/%s' % (url, kernel), verify=verify)
+    return response.status_code
 
 
 def simple_cli(args):
@@ -269,8 +270,13 @@ def main():
     state = session_state(args.url, verify=args.insecure)
 
     if args.shutdown_all:
+        if len(state) == 0:
+            sys.stderr.write("no notebook founds at %s\n" % args.url)
+            exit(1)
         for notebook in state:
-            shutdown_notebook(args.url, notebook['kernel']['id'], verify=args.insecure)
+            sys.stdout.write("shutting down notebook: %-45s" % notebook_name(notebook, args))
+            status = shutdown_notebook(args.url, notebook['kernel']['id'], verify=args.insecure)
+            sys.stdout.write(" [%d]\n" % status)
         exit()
 
     try:
