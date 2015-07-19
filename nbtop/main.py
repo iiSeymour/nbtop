@@ -298,7 +298,7 @@ def main():
     parser.add_argument("-k", "--insecure", action="store_false", default=True,
                         help="no verification of SSL certificates")
     parser.add_argument("-a", "--abs", action="store_true", default=False,
-                        help="show memory usage in absolute values (KB, MB, GB) not %")
+                        help="show memory usage in absolute values (KB, MB, GB) not percent")
     parser.add_argument("-l", "--links", action="store_true", default=False,
                         help="display full notebook URLs")
     parser.add_argument("--shutdown-all", action="store_true", default=False,
