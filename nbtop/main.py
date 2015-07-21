@@ -18,13 +18,12 @@ import argparse
 import warnings
 from time import sleep
 from psutil import process_iter
+from version import __version__
 from curses import color_pair, wrapper
 from os.path import splitext, basename
 from simplejson.scanner import JSONDecodeError
 from six.moves.urllib.parse import quote
 from requests.exceptions import SSLError, ConnectionError, InvalidSchema
-
-__version__ = "0.3.1"
 
 
 def notebook_process(process):

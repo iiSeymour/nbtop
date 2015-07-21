@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
-from nbtop.main import __version__
+from nbtop.version import __version__
 
 NAME = "nbtop"
 DESCRIPTION = "resource monitor for IPython Notebook servers"
