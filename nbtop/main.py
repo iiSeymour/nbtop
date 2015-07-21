@@ -10,19 +10,19 @@ license: MIT Copyright (c) 2015 Chris Seymour
 """
 
 import os
-import math
 import sys
+import math
 import curses
 import requests
 import argparse
 import warnings
 from time import sleep
-from psutil import process_iter
 from version import __version__
+from psutil import process_iter
 from curses import color_pair, wrapper
 from os.path import splitext, basename
-from simplejson.scanner import JSONDecodeError
 from six.moves.urllib.parse import quote
+from simplejson.scanner import JSONDecodeError
 from requests.exceptions import SSLError, ConnectionError, InvalidSchema
 
 
@@ -45,21 +45,29 @@ def kernel(process):
         if arg.endswith('.json') and '/kernel-' in arg:
             return splitext(basename(arg).replace('kernel-', ''))[0]
 
+
 def human_readable_size(bytes):
-    """Converts a size in bytes to a string containing a human-readable size
-    in KB/MB/GB etc.
+    """
+    Converts a size in bytes to a string containing a
+    human-readable size in KB/MB/GB etc.
     """
     exp = int(math.log(bytes) / math.log(1024))
     units = "kMGTPE"
     pre = units[exp-1]
     return "%.1f%sB" % (bytes / (1024**exp), pre)
 
+
 def process_stats_perc(proc):
-    """Get process statistics for the percentage memory option"""
+    """
+    Get process statistics for the percentage memory option
+    """
     return proc.cpu_percent(), proc.memory_percent(), proc.create_time()
 
+
 def process_stats_abs(proc):
-    """Get process statistics for the absolute memory option"""
+    """
+    Get process statistics for the absolute memory option
+    """
     rss = proc.memory_info()[0]
     mem_usage = human_readable_size(rss)
 
