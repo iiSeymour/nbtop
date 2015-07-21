@@ -156,16 +156,25 @@ def shutdown_notebook(url, kernel, verify=True):
 def simple_cli(args):
     while True:
 
-        load = process_state()
+        load = process_state(args)
         state = session_state(args.url, verify=args.insecure)
 
         os.system('clear')
-        print('{:40}{:6}{:8}{}'.format('Kernel', 'CPU %', 'MEM %', 'Notebook'))
+        print('{:40}{:6}{:10}{}'.format('Kernel', 'CPU %', 'MEM %', 'Notebook'))
 
         for notebook in state:
             kernel = notebook['kernel']['id']
             name = notebook_name(notebook, args)
-            print('{0:40}{1[0]:5.1f}{1[1]:6.1f}   {2:}'.format(kernel, load[kernel], name))
+
+            cpu = str(round(load.get(kernel, (-99, -99))[0], 1))
+            cpu = cpu if float(cpu) < 100 else '100'
+
+            if args.abs:
+                mem = load.get(kernel, ('-99.0', '-99.0'))[1]
+            else:
+                mem = str(round(load.get(kernel, (-99, -99))[1], 1))
+
+            print('{0:40}{1:6}{2:7}   {3:}'.format(kernel, cpu, mem, name))
 
         sleep(args.rate)
 
