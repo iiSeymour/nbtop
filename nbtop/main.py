@@ -255,7 +255,7 @@ def curses_cli(stdscr, args):
             cpu = cpu if float(cpu) < 100 else '100'
 
             if args.abs:
-                mem = load.get(kern, (-99, -99))[1]
+                mem = load.get(kern, ('-99.0', '-99.0'))[1]
             else:
                 mem = str(round(load.get(kern, (-99, -99))[1], 1))
 
