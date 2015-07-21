@@ -54,7 +54,7 @@ def human_readable_size(bytes):
     exp = int(math.log(bytes) / math.log(1024))
     units = "kMGTPE"
     pre = units[exp-1]
-    return "%.1f%sB" % (bytes / (1024**exp), pre)
+    return "%.1f %sB" % (bytes / (1024**exp), pre)
 
 
 def process_stats_perc(proc):
