@@ -10,6 +10,7 @@ license: MIT Copyright (c) 2015 Chris Seymour
 """
 
 import os
+import math
 import sys
 import curses
 import requests
@@ -45,17 +46,41 @@ def kernel(process):
         if arg.endswith('.json') and '/kernel-' in arg:
             return splitext(basename(arg).replace('kernel-', ''))[0]
 
+def human_readable_size(bytes):
+    """Converts a size in bytes to a string containing a human-readable size
+    in KB/MB/GB etc.
+    """
+    exp = int(math.log(bytes) / math.log(1024))
+    units = "kMGTPE"
+    pre = units[exp-1]
+    return "%.1f%sB" % (bytes / (1024**exp), pre)
 
-def process_stats(proc):
+def process_stats_perc(proc):
+    """Get process statistics for the percentage memory option"""
     return proc.cpu_percent(), proc.memory_percent(), proc.create_time()
 
+def process_stats_abs(proc):
+    """Get process statistics for the absolute memory option"""
+    rss = proc.memory_info()[0]
+    mem_usage = human_readable_size(rss)
 
-def process_state():
+    return proc.cpu_percent(), mem_usage, proc.create_time()
+
+
+def process_state(args):
     """
     Get IPython notebook process information
     """
     procs = filter(notebook_process, process_iter())
-    return {kernel(proc): process_stats(proc) for proc in procs}
+
+    if args.abs:
+        # Display memory usage in abs values
+        process_stats_function = process_stats_abs
+    else:
+        # Display memory usage in %
+        process_stats_function = process_stats_perc
+
+    return {kernel(proc): process_stats_function(proc) for proc in procs}
 
 
 def server_version(url, verify=True):
@@ -177,7 +202,7 @@ def curses_cli(stdscr, args):
     footer.addstr(0, max_w - 7, "[quit]")
     footer.refresh()
 
-    load = process_state()
+    load = process_state(args)
     state = session_state(args.url, verify=args.insecure)
 
     running_notebooks = len(state)
@@ -198,13 +223,18 @@ def curses_cli(stdscr, args):
         header.addstr(1, 0, args.url.center(max_w), color_pair(5) | curses.A_STANDOUT)
         header.addstr(2, KERN_COL, "Kernel", color_pair(3))
         header.addstr(2, CPU__COL, "CPU %",  color_pair(3))
-        header.addstr(2, MEM__COL, "MEM %",  color_pair(3))
+
+        if args.abs:
+            header.addstr(2, MEM__COL, "MEM",  color_pair(3))
+        else:
+            header.addstr(2, MEM__COL, "MEM %",  color_pair(3))
+
         header.addstr(2, NAME_COL, "Name",   color_pair(3))
         header.refresh()
 
         win.clear()
 
-        load = process_state()
+        load = process_state(args)
         state = session_state(args.url, verify=args.insecure)
         running_notebooks = len(state)
 
@@ -216,7 +246,11 @@ def curses_cli(stdscr, args):
             name = notebook_name(notebook, args)
             cpu = str(round(load.get(kern, (-99, -99))[0], 1))
             cpu = cpu if float(cpu) < 100 else '100'
-            mem = str(round(load.get(kern, (-99, -99))[1], 1))
+
+            if args.abs:
+                mem = load.get(kern, (-99, -99))[1]
+            else:
+                mem = str(round(load.get(kern, (-99, -99))[1], 1))
 
             kernels.append(kern)
 
@@ -263,6 +297,8 @@ def main():
                         help="strip notebook extensions")
     parser.add_argument("-k", "--insecure", action="store_false", default=True,
                         help="no verification of SSL certificates")
+    parser.add_argument("-a", "--abs", action="store_true", default=False,
+                        help="show memory usage in absolute values (KB, MB, GB) not percent")
     parser.add_argument("-l", "--links", action="store_true", default=False,
                         help="display full notebook URLs")
     parser.add_argument("--shutdown-all", action="store_true", default=False,
