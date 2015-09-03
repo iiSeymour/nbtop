@@ -17,6 +17,7 @@ import requests
 import argparse
 import warnings
 from time import sleep
+from getpass import getpass
 from version import __version__
 from psutil import process_iter
 from curses import color_pair, wrapper
@@ -90,13 +91,16 @@ def process_state(args):
     return {kernel(proc): process_stats_function(proc) for proc in procs}
 
 
-def server_version(url, verify=True):
+def server_version(url, verify=True, session=None):
     """
     Get the IPython notebook server version
     """
     path = '/api'
     try:
-        response = requests.get(url + path, verify=verify)
+        if session is not None:
+            response = session.get(url + path, verify=verify)
+        else:
+            response = requests.get(url + path, verify=verify)
     except SSLError:
         sys.stderr.write('certificate verify failed\n')
         sys.exit(1)
@@ -106,13 +110,16 @@ def server_version(url, verify=True):
         return 2
 
 
-def session_state(url, verify=True):
+def session_state(url, verify=True, session=None):
     """
     Query IPython notebook server for session information
     """
     path = '/api/sessions'
     try:
-        response = requests.get(url + path, verify=verify)
+        if session is not None:
+            response = session.get(url + path, verify=verify)
+        else:
+            response = requests.get(url + path, verify=verify)
     except SSLError:
         sys.stderr.write('certificate verification failed\n')
         sys.exit(1)
@@ -134,7 +141,7 @@ def notebook_name(notebook, args):
     """
     Get full notebook name with path
     """
-    version = server_version(args.url, args.insecure)
+    version = server_version(args.url, args.insecure, session=args.session)
     name = notebook['notebook']['path']
     if version == 2:
         name = os.path.join(name, notebook['notebook']['name'])
@@ -157,7 +164,7 @@ def simple_cli(args):
     while True:
 
         load = process_state(args)
-        state = session_state(args.url, verify=args.insecure)
+        state = session_state(args.url, verify=args.insecure, session=args.session)
 
         os.system('clear')
         print('{:40}{:6}{:10}{}'.format('Kernel', 'CPU %', 'MEM %', 'Notebook'))
@@ -219,7 +226,7 @@ def curses_cli(stdscr, args):
     footer.refresh()
 
     load = process_state(args)
-    state = session_state(args.url, verify=args.insecure)
+    state = session_state(args.url, verify=args.insecure, session=args.session)
 
     running_notebooks = len(state)
 
@@ -251,7 +258,7 @@ def curses_cli(stdscr, args):
         win.clear()
 
         load = process_state(args)
-        state = session_state(args.url, verify=args.insecure)
+        state = session_state(args.url, verify=args.insecure, session=args.session)
         running_notebooks = len(state)
 
         kernels = [None, ]  # Pad for natural indexing
@@ -317,6 +324,8 @@ def main():
                         help="show memory usage in absolute values (KB, MB, GB) not percent")
     parser.add_argument("-l", "--links", action="store_true", default=False,
                         help="display full notebook URLs")
+    parser.add_argument("-p", "--passwd", action="store_true", default=False,
+                        help="prompt for notebook server password")
     parser.add_argument("--shutdown-all", action="store_true", default=False,
                         help="shutdown all notebooks on the server")
     parser.add_argument("-u", "--url", required=True,
@@ -324,7 +333,21 @@ def main():
     parser.add_argument("-v", "--version", action="version", version=__version__)
 
     args = parser.parse_args()
-    state = session_state(args.url, verify=args.insecure)
+
+    args.session = None
+
+    if args.passwd:
+        password = getpass("password for %s: " % args.url)
+
+        login_url = args.url + '/login'
+        args.session = requests.Session()
+        response = args.session.post(login_url, verify=args.insecure, data={'password': password})
+
+        if response.url == login_url:
+            sys.stderr.write("invalid password!\n")
+            exit(1)
+
+    state = session_state(args.url, verify=args.insecure, session=args.session)
 
     if args.shutdown_all:
         if len(state) == 0:
