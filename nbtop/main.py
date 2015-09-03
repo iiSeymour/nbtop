@@ -91,25 +91,6 @@ def process_state(args):
     return {kernel(proc): process_stats_function(proc) for proc in procs}
 
 
-def server_version(url, verify=True, session=None):
-    """
-    Get the IPython notebook server version
-    """
-    path = '/api'
-    try:
-        if session is not None:
-            response = session.get(url + path, verify=verify)
-        else:
-            response = requests.get(url + path, verify=verify)
-    except SSLError:
-        sys.stderr.write('certificate verify failed\n')
-        sys.exit(1)
-    if response.status_code == 200:
-        return 3
-    else:
-        return 2
-
-
 def session_state(url, verify=True, session=None):
     """
     Query IPython notebook server for session information
@@ -141,10 +122,11 @@ def notebook_name(notebook, args):
     """
     Get full notebook name with path
     """
-    version = server_version(args.url, args.insecure, session=args.session)
     name = notebook['notebook']['path']
-    if version == 2:
+    try:
         name = os.path.join(name, notebook['notebook']['name'])
+    except KeyError:
+        pass
     if args.links:
         name = os.path.join(args.url, 'notebooks', quote(name))
     elif not args.extension:
