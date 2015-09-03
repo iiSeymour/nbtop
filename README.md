@@ -13,15 +13,18 @@ usage
 
 ```bash
 $ nbtop --help
-usage: main.py [-h] [-e] [-k] [-l] [--shutdown-all] -u URL
+usage: nbtop [-h] [-e] [-k] [-a] [-l] [-p] [--shutdown-all] -u URL [-v]
 
 optional arguments:
   -h, --help         show this help message and exit
   -e, --extension    strip notebook extensions
   -k, --insecure     no verification of SSL certificates
+  -a, --abs          show memory usage in absolute values (KB, MB, GB)
   -l, --links        display full notebook URLs
+  -p, --passwd       prompt for notebook server password
   --shutdown-all     shutdown all notebooks on the server
   -u URL, --url URL  IPython notebook server url
+  -v, --version      show program's version number and exit
 ```
 
 installation
