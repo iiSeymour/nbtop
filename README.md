@@ -3,9 +3,6 @@ nbtop
 
 IPython Notebook server monitor inspired by `htop`.
 
-screenshot
-==========
-
 ![screenshot](https://raw.githubusercontent.com/iiSeymour/nbtop/master/screenshot.png)
 
 usage
