@@ -47,4 +47,4 @@ remote notebook server the memory and cpu percentage will be displayed as -99.
 license
 =======
 
-MIT Copyright (c) 2015 Chris Seymour
+MIT Copyright (c) 2015 - 2017 Chris Seymour
