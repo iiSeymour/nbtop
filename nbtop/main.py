@@ -156,7 +156,6 @@ def simple_cli(args):
             name = notebook_name(notebook, args)
 
             cpu = str(round(load.get(kernel, (-99, -99))[0], 1))
-            cpu = cpu if float(cpu) < 100 else '100'
 
             if args.abs:
                 mem = load.get(kernel, ('-99.0', '-99.0'))[1]
@@ -250,7 +249,6 @@ def curses_cli(stdscr, args):
             kern = notebook['kernel']['id']
             name = notebook_name(notebook, args)
             cpu = str(round(load.get(kern, (-99, -99))[0], 1))
-            cpu = cpu if float(cpu) < 100 else '100'
 
             if args.abs:
                 mem = load.get(kern, ('-99.0', '-99.0'))[1]
