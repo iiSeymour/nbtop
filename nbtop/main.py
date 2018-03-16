@@ -13,18 +13,20 @@ import os
 import sys
 import math
 import curses
-import requests
 import argparse
 import warnings
 from time import sleep
 from getpass import getpass
-from version import __version__
-from psutil import process_iter
 from curses import color_pair, wrapper
 from os.path import splitext, basename
+
+import requests
+from psutil import process_iter
 from six.moves.urllib.parse import quote
 from simplejson.scanner import JSONDecodeError
 from requests.exceptions import SSLError, ConnectionError, InvalidSchema
+
+from nbtop.version import __version__
 
 
 def notebook_process(process):
