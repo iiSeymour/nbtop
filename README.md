@@ -29,7 +29,7 @@ installation
 
 From pip:
 
-    $ sudo pip install nbtop
+    $ pip install --user nbtop
 
 From github:
 
