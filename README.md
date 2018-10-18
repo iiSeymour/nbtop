@@ -35,7 +35,7 @@ From github:
 
     $ git clone https://github.com/iiSeymour/nbtop
     $ cd nbtop
-    $ sudo python setup.py install
+    $ python setup.py install
 
 notes
 =====
