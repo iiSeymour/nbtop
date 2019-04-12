@@ -323,7 +323,12 @@ def main():
 
         login_url = args.url + '/login'
         args.session = requests.Session()
-        response = args.session.post(login_url, verify=args.insecure, data={'password': password})
+        resp = args.session.get(login_url)
+        params = {
+            '_xsrf': resp.cookies['_xsrf'],
+            'password': password
+        }
+        response = args.session.post(login_url, verify=args.insecure, data=params)
 
         if response.url == login_url:
             sys.stderr.write("invalid password!\n")
