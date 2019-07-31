@@ -97,12 +97,12 @@ def session_state(url, verify=True, session=None):
     """
     Query IPython notebook server for session information
     """
-    path = '/api/sessions'
+    path = 'api/sessions'
     try:
         if session is not None:
-            response = session.get(url + path, verify=verify)
+            response = session.get(os.path.join(url, path), verify=verify)
         else:
-            response = requests.get(url + path, verify=verify)
+            response = requests.get(os.path.join(url, path), verify=verify)
     except SSLError:
         sys.stderr.write('certificate verification failed\n')
         sys.exit(1)
@@ -321,13 +321,14 @@ def main():
     if args.passwd:
         password = getpass("password for %s: " % args.url)
 
-        login_url = args.url + '/login'
+        login_url = os.path.join(args.url, 'login')
         args.session = requests.Session()
         resp = args.session.get(login_url)
         params = {
             '_xsrf': resp.cookies['_xsrf'],
             'password': password
         }
+
         response = args.session.post(login_url, verify=args.insecure, data=params)
 
         if response.url == login_url:
@@ -353,6 +354,7 @@ def main():
             curses_cli(args)
     except KeyboardInterrupt:
         pass
+
 
 if __name__ == '__main__':
     main()
